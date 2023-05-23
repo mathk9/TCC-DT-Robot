@@ -30,11 +30,14 @@ def handle_update_servo(data):
     servo_id = data['servoId']
     angle = data['angle']
 
-    print('servo_id: '+str(servo_id)+' angle: '+str(angle))
+    # print('servo_id: '+str(servo_id)+' angle: '+str(angle))
 
     resp = 'servo_id='+str(servo_id)+'&angle='+str(angle)+' '
 
     client_socket.sendto( resp.encode(), address)
+
+    rec_data, addr = client_socket.recvfrom(2048)
+    print('servos: '+str(rec_data.decode()))
 
 if __name__ == '__main__':
     socketio.run(app)

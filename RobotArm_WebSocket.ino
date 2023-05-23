@@ -1,17 +1,21 @@
-#include <Ethernet.h> //Load Ethernet Library
-#include <EthernetUdp.h> //Load the Udp Library
-#include <SPI.h> //Load SPI Library
+#include <Ethernet.h> //Carregar a biblioteca Ethernet
+#include <EthernetUdp.h> //Carregar a biblioteca Udp
+#include <SPI.h> //Carregar a biblioteca SPI
 #include <Servo.h>
 
-#include "Wire.h" //imports the wire library
+#include "Wire.h" //Importar a biblioteca Wire
 
-byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEE}; //Assign mac address
-IPAddress ip(192, 168, 0, 243); //Assign the IP Adress
-unsigned int localPort = 80; // Assign a port to talk over
-char packetBuffer[UDP_TX_PACKET_MAX_SIZE]; //dimensian a char array to hold our data packet
-String datReq; //String for our data
-int packetSize; //Size of the packet
-EthernetUDP Udp; // Create a UDP Object
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEE}; //Atribuir o endereço MAC
+IPAddress ip(192, 168, 0, 243); //Atribuir o endereço IP
+unsigned int localPort = 80; //Atribuir uma porta para comunicação
+
+char packetBuffer[UDP_TX_PACKET_MAX_SIZE]; //Dimensionar um array de caracteres para armazenar nosso pacote de dados
+String datReq; //String para armazenar nossos dados
+
+int packetSize; //Tamanho do pacote
+
+EthernetUDP Udp; //Criar um objeto UDP
+
 Servo servo1;
 Servo servo2;
 Servo servo3;
@@ -23,44 +27,43 @@ void setup() {
   servo3.attach(8);
   servo4.attach(10);
 
-  /*base.attach(8);
-  braco.attach(9);
-  garra.attach(11);
-  cotovelo.attach(10);*/
+  /* base.attach(8);
+    braco.attach(9);
+    garra.attach(11);
+    cotovelo.attach(10); */
 
-  Serial.begin(9600); //Initialize Serial Port
-  Ethernet.begin( mac, ip); //Inialize the Ethernet
-  Udp.begin(localPort); //Initialize Udp
-  delay(1500); //delay
+  Serial.begin(9600); //Inicializar a porta serial
+  Ethernet.begin(mac, ip); //Inicializar a Ethernet
+  Udp.begin(localPort); //Inicializar o Udp
+  delay(1500); //Atraso
 
 }
 
 void loop() {
 
-  packetSize = Udp.parsePacket(); //Reads the packet size
+  packetSize = Udp.parsePacket(); //Ler o tamanho do pacote
 
-  if (packetSize > 0) { //if packetSize is >0, that means someone has sent a request
-
-    Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE); //Read the data request
-    String datReq(packetBuffer); //Convert char array packetBuffer into a string called datReq
+  if (packetSize > 0) { //Se o tamanho do pacote for >0, isso significa que alguém enviou uma solicitação
+    Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE); //Ler a solicitação de dados
+    String datReq(packetBuffer); //Converter o array de caracteres packetBuffer em uma string chamada datReq
 
     Serial.println("datReq: " + datReq);
-    // Processa o comando HTTP do servidor Flask
+    // Processar o comando HTTP do servidor Flask
     processRequest(datReq);
 
   }
-  memset(packetBuffer, 0, UDP_TX_PACKET_MAX_SIZE); //clear out the packetBuffer array
+  memset(packetBuffer, 0, UDP_TX_PACKET_MAX_SIZE); //Limpar o array packetBuffer
 }
 
 void processRequest(String request) {
-  // Extrai o ID do servo e o ângulo da solicitação
+  // Extrair o ID do servo e o ângulo da solicitação
   int servoId = extractServoId(request);
   int angle = extractAngle(request);
 
   Serial.println("angle: " + String(angle));
   Serial.println("servoId: " + String(servoId));
 
-  // Move o servo conforme necessário
+  // Mover o servo conforme necessário
   switch (servoId) {
     case 1:
       moveServo(servo1, angle);
@@ -88,7 +91,7 @@ int extractServoId(String request) {
       return idString.toInt();
     }
   }
-  return -1;  // Retornar -1 se não encontrar o ID do servo na solicitação
+  return -1; // Retornar -1 se não encontrar o ID do servo na solicitação
 }
 
 int extractAngle(String request) {
@@ -100,17 +103,19 @@ int extractAngle(String request) {
       return angleString.toInt();
     }
   }
-  return -1;  // Retornar -1 se não encontrar o ângulo na solicitação
+  return -1; // Retornar -1 se não encontrar o ângulo na solicitação
 }
 
 void moveServo(Servo servo, int angle) {
-  // Limita o ângulo entre 0 e 180
+  delay(5);
+
+  // Limitar o ângulo entre 0 e 180
   angle = constrain(angle, 0, 180);
 
-  // Move o servo para o ângulo desejado
+  // Mover o servo para o ângulo desejado
   servo.write(angle);
 
-  Udp.beginPacket(Udp.remoteIP(), Udp.remotePort()); //Initialize packet send
-  Udp.print(angle); //Send the temperature data
-  Udp.endPacket(); //End the packet
+  Udp.beginPacket(Udp.remoteIP(), Udp.remotePort()); //Inicializar o envio do pacote
+  Udp.print(String(servo1.read()) + ';' + String(servo2.read()) + ';' + String(servo3.read()) + ';' + String(servo4.read())); //Enviar os dados de temperatura
+  Udp.endPacket(); //Finalizar o pacote
 }

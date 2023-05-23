@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>RoboARM Control</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
   <style>
     .slider-container {
       margin-bottom: 20px;
@@ -19,30 +20,32 @@
   </style>
 </head>
 <body>
-  <h1>RoboARM Control</h1>
+  <div class="container">
+    <h1 class="mt-5">RoboARM Control</h1>
 
-  <div class="slider-container">
-    <label class="slider-label">Servo 1:</label>
-    <input type="range" class="slider" id="servo1Slider" min="0" max="180" value="90">
-    <span id="servo1Value">90</span>
-  </div>
+    <div class="slider-container">
+      <label class="slider-label">Servo 1:</label>
+      <input type="range" class="slider" id="servo1Slider" min="0" max="180" value="90">
+      <span id="servo1Value">90</span>
+    </div>
 
-  <div class="slider-container">
-    <label class="slider-label">Servo 2:</label>
-    <input type="range" class="slider" id="servo2Slider" min="0" max="180" value="90">
-    <span id="servo2Value">90</span>
-  </div>
+    <div class="slider-container">
+      <label class="slider-label">Servo 2:</label>
+      <input type="range" class="slider" id="servo2Slider" min="0" max="180" value="90">
+      <span id="servo2Value">90</span>
+    </div>
 
-  <div class="slider-container">
-    <label class="slider-label">Servo 3:</label>
-    <input type="range" class="slider" id="servo3Slider" min="0" max="180" value="90">
-    <span id="servo3Value">90</span>
-  </div>
+    <div class="slider-container">
+      <label class="slider-label">Servo 3:</label>
+      <input type="range" class="slider" id="servo3Slider" min="0" max="180" value="90">
+      <span id="servo3Value">90</span>
+    </div>
 
-  <div class="slider-container">
-    <label class="slider-label">Servo 4:</label>
-    <input type="range" class="slider" id="servo4Slider" min="0" max="180" value="90">
-    <span id="servo4Value">90</span>
+    <div class="slider-container">
+      <label class="slider-label">Servo 4:</label>
+      <input type="range" class="slider" id="servo4Slider" min="0" max="180" value="90">
+      <span id="servo4Value">90</span>
+    </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
