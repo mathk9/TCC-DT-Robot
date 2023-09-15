@@ -46,17 +46,13 @@ Servo servo3;
 Servo servo4;
 
 void mqtt_callback(char* topic, byte* payload, unsigned int length){
-    String msg;
-     
-    //obtem a string do payload recebido
-    for(int i = 0; i < length; i++) 
-    {
-       char c = (char)payload[i];
-       msg += c;
+    Serial.print("Message arrived [");
+    Serial.print(topic);
+    Serial.print("] ");
+    for (int i=0;i<length;i++) {
+      Serial.print((char)payload[i]);
     }
-    
-    Serial.print("- Mensagem recebida: ");
-    Serial.println(msg);
+    Serial.println();
 
     EnviaAngloServosMQTT();
     
@@ -101,10 +97,11 @@ void setup(){
 
   client.setServer(BROKER_MQTT, BROKER_PORT);
   client.setCallback(mqtt_callback);
+  client.setKeepAlive(6);  // Configurar Keep Alive Interval para 60 segundos
 
   // Inicia a thread MQTT
   mqttThread.onRun(mqttLoop);
-  mqttThread.setInterval(100);  // Intervalo de verificação em milissegundos
+  mqttThread.setInterval(1000);  // Intervalo de verificação em milissegundos
   mqttThread.enabled = true;
 
   mqttThreadRead.onRun(readMQTT);
@@ -112,11 +109,13 @@ void setup(){
   mqttThread.enabled = true;
 }
 
-void EnviaAngloServosMQTT() {
+void EnviaAngloServosMQTT(){
   client.publish(TOPICO_PUBLISH, ("mt1|" + String(servo1.read())).c_str());
   client.publish(TOPICO_PUBLISH, ("mt2|" + String(servo2.read())).c_str());
   client.publish(TOPICO_PUBLISH, ("mt3|" + String(servo3.read())).c_str());
   client.publish(TOPICO_PUBLISH, ("mt4|" + String(servo4.read())).c_str());
+
+  client.subscribe(TOPICO_SUBSCRIBE);
   
   Serial.println("Motor1: " + String(servo1.read()));
   Serial.println("Motor2: " + String(servo2.read()));
@@ -124,14 +123,17 @@ void EnviaAngloServosMQTT() {
   Serial.println("Motor4: " + String(servo4.read()));
   Serial.println("*--------//--------*");
   
-  delay(2000);
+  delay(100);
 }
 
 void readMQTT(){
-  if(client.connected()){
-    Serial.println("readMQTT");
+  if(client.connect(ID_MQTT)){
+    Serial.print(client.state());
+    Serial.println(" readMQTT");
+    
+    client.subscribe(TOPICO_SUBSCRIBE);
     client.loop();
-    delay(10);
+    delay(1000);
   }
 }
 
@@ -140,9 +142,6 @@ void mqttLoop() {
   if (!client.connected()) {
     reconnectMQTT();
   }
-
-  // Mantenha a conexão MQTT ativa
-  client.loop();
 }
 
 void loop(){
