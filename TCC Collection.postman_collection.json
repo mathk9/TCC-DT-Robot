@@ -8,11 +8,8 @@
 	"item": [
 		{
 			"name": "Criar um serviço Copy",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [
 					{
 						"key": "fiware-service",
@@ -70,7 +67,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"devices\": [\r\n        {\r\n            \"device_id\": \"DeviceRoboArm001\",\r\n            \"entity_name\": \"urn:ngsi-ld:RoboArm:001\",\r\n            \"entity_type\": \"RoboArm\",\r\n            \"protocol\": \"PDI-IoTA-UltraLight\",\r\n            \"transport\": \"MQTT\",\r\n            \"timezone\":    \"America/Sao_Paulo\",\r\n            \"attributes\": [\r\n                {\r\n                    \"object_id\": \"mt1\",\r\n                    \"name\": \"motor1\",\r\n                    \"type\": \"Number\"\r\n                },\r\n                {\r\n                    \"object_id\": \"mt2\",\r\n                    \"name\": \"motor2\",\r\n                    \"type\": \"Number\"\r\n                },\r\n                {\r\n                    \"object_id\": \"mt3\",\r\n                    \"name\": \"motor3\",\r\n                    \"type\": \"Number\"\r\n                },\r\n                {\r\n                    \"object_id\": \"mt4\",\r\n                    \"name\": \"motor4\",\r\n                    \"type\": \"Number\"\r\n                }\r\n            ],\r\n            \"commands\": [\r\n                {\r\n                    \"name\": \"moveMotor1\",\r\n                    \"type\": \"command\"\r\n                },\r\n                {\r\n                    \"name\": \"moveMotor2\",\r\n                    \"type\": \"command\"\r\n                },\r\n                {\r\n                    \"name\": \"moveMotor3\",\r\n                    \"type\": \"command\"\r\n                },\r\n                {\r\n                    \"name\": \"moveMotor4\",\r\n                    \"type\": \"command\"\r\n                }\r\n            ],\r\n            \"static_attributes\": [\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"devices\": [\r\n        {\r\n            \"device_id\": \"DeviceRoboArm001\",\r\n            \"entity_name\": \"urn:ngsi-ld:RoboArm:001\",\r\n            \"entity_type\": \"RoboArm\",\r\n            \"protocol\": \"PDI-IoTA-UltraLight\",\r\n            \"transport\": \"MQTT\",\r\n            \"timezone\":    \"America/Sao_Paulo\",\r\n            \"attributes\": [\r\n                {\r\n                    \"object_id\": \"mt1\",\r\n                    \"name\": \"motor1\",\r\n                    \"type\": \"Integer\"\r\n                },\r\n                {\r\n                    \"object_id\": \"mt2\",\r\n                    \"name\": \"motor2\",\r\n                    \"type\": \"Integer\"\r\n                },\r\n                {\r\n                    \"object_id\": \"mt3\",\r\n                    \"name\": \"motor3\",\r\n                    \"type\": \"Integer\"\r\n                },\r\n                {\r\n                    \"object_id\": \"mt4\",\r\n                    \"name\": \"motor4\",\r\n                    \"type\": \"Integer\"\r\n                }\r\n            ],\r\n            \"commands\": [\r\n                {\r\n                    \"name\": \"moveMotor1\",\r\n                    \"type\": \"command\"\r\n                },\r\n                {\r\n                    \"name\": \"moveMotor2\",\r\n                    \"type\": \"command\"\r\n                },\r\n                {\r\n                    \"name\": \"moveMotor3\",\r\n                    \"type\": \"command\"\r\n                },\r\n                {\r\n                    \"name\": \"moveMotor4\",\r\n                    \"type\": \"command\"\r\n                }\r\n            ],\r\n            \"static_attributes\": [\r\n            ]\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -179,6 +176,11 @@
 		},
 		{
 			"name": "Enviar comando Switch pelo Orion Context Broker Copy",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
 			"request": {
 				"method": "PATCH",
 				"header": [
@@ -200,10 +202,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"moveMotor1\": {\r\n        \"type\": \"command\",\r\n        \"value\": 57     \r\n    },\r\n    \"moveMotor2\": {\r\n        \"type\": \"command\",\r\n        \"value\": 45   \r\n    },\r\n    \"moveMotor3\": {\r\n        \"type\": \"command\",\r\n        \"value\": 50    \r\n    },\r\n    \"moveMotor4\": {\r\n        \"type\": \"command\",\r\n        \"value\": 46  \r\n    }\r\n}"
+					"raw": "{\r\n    \"motor1\": {\r\n        \"type\": \"Integer\",\r\n        \"value\": 30\r\n    }\r\n}"
 				},
 				"url": {
-					"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:RoboArm:001/attrs?type=RoboArm",
+					"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:RoboArm:001/attrs",
 					"protocol": "http",
 					"host": [
 						"{{url}}"
@@ -214,12 +216,46 @@
 						"entities",
 						"urn:ngsi-ld:RoboArm:001",
 						"attrs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. sth subscribe temperature Copy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all Motion Sensor count changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor1\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor1\"],\r\n    \"attrsFormat\": \"legacy\"\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "http://{{url}}:1026/v2/subscriptions",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
 					],
-					"query": [
-						{
-							"key": "type",
-							"value": "RoboArm"
-						}
+					"port": "1026",
+					"path": [
+						"v2",
+						"subscriptions"
 					]
 				}
 			},
