@@ -5,6 +5,7 @@
 #include <Servo.h>
 #include <Regexp.h>
 #include <ThreadController.h>
+#include <ArduinoJson.h>
 
 #include "Wire.h" //Importar a biblioteca Wire
 
@@ -84,59 +85,35 @@ void setup()
 //         um dos tópicos subescritos chega)
 // Parâmetros: nenhum
 // Retorno: nenhum
-void mqtt_callback(char *topic, byte *payload, unsigned int length)
-{
-  String msg;
+void mqtt_callback(char *topic, byte *payload, unsigned int length) {
+  // Criar um buffer para armazenar a mensagem recebida
+  char message[length + 1];
+  memcpy(message, payload, length);
+  message[length] = '\0'; // Adicionar o caractere nulo no final para formar uma string C válida
 
-  // obtem a string do payload recebido
-  for (int i = 0; i < length; i++)
-  {
-    char c = (char)payload[i];
-    msg += c;
-  }
+  // Fazer parsing da mensagem JSON
+  DynamicJsonDocument jsonDoc(512); // Ajuste o tamanho do documento conforme necessário
+  deserializeJson(jsonDoc, message);
 
-  Serial.print("- Mensagem recebida: ");
-  Serial.println(msg);
+  // Verificar todas as chaves possíveis ('motor1', 'motor2', 'motor3', 'motor4')
+  for (int i = 1; i <= 4; ++i) {
+    String motorKey = "motor" + String(i);
+    if (jsonDoc["data"][0].containsKey(motorKey)) {
+      // Se a chave do motor existe no JSON, extrair o valor
+      int valor = jsonDoc["data"][0][motorKey];
+      
+      // Agora você pode usar a variável 'motorKey' e 'valor' conforme necessário
+      // Por exemplo, você pode imprimir esses valores no console serial:
+      Serial.print("Motor: ");
+      Serial.println(motorKey);
+      Serial.print("Valor: ");
+      Serial.println(valor);
 
-  // verifica se deve colocar nivel alto de tensão na saída D0:
-  if (msg.equals("DeviceRoboArm001@moveMotor1|"))
-  {
-    // delay(1000);
-    // long randNumber;
-    // randNumber = random(40, 120);
-    // servo1.write(randNumber);
+      moveRoboArm(motorKey, valor);
 
-    // Serial.println("Motor1: " + String(servo1.read()));
-    // delay(5000);
-
-    // long randNumber2;
-    // randNumber2 = random(40, 120);
-    // servo2.write(randNumber2);
-
-    // Serial.println("Motor2: " + String(servo2.read()));
-    // delay(5000);
-
-    // long randNumber3;
-    // randNumber3 = random(40, 80);
-    // servo3.write(randNumber3);
-
-    // Serial.println("Motor3: " + String(servo3.read()));
-    // delay(5000);
-
-    // long randNumber4;
-    // randNumber4 = random(40, 120);
-    // servo4.attach(10);
-    // delay(10);
-    // servo4.write(randNumber4);
-    // Serial.println("Motor4: " + String(servo4.read()));
-    // delay(2000);
-    // servo4.detach();
-
-    // delay(100);
-
-    moveRoboArm();
-
-    EnviaAngloServosMQTT();
+      // Após encontrar a chave correspondente, você pode sair do loop
+      break;
+    }
   }
 }
 
@@ -164,6 +141,31 @@ void reconnectMQTT()
   }
 }
 
+void moveRoboArm(String servo, int angle) {
+
+  if(servo.equals("motor1")){
+    servo1.write(angle);
+    delay(3000);
+  }
+  else if(servo.equals("motor2")){
+    servo2.write(angle);
+    delay(3000);
+  }
+  else if(servo.equals("motor3")){
+    servo3.write(angle);
+    delay(3000);
+  }
+  else if(servo.equals("motor4")){
+    servo4.attach(10);
+    servo4.write(angle);
+    delay(3000);
+    servo4.detach();
+  }
+  else{
+    Serial.println("Servo incorreto!");
+  }
+}
+
 void EnviaAngloServosMQTT()
 {  
   client.publish(TOPICO_PUBLISH, ("mt1|" + String(servo1.read())).c_str());
@@ -185,7 +187,7 @@ void readMQTT()
 {
   if (client.connect(ID_MQTT))
   {
-    Serial.print(client.state());
+    //Serial.print(client.state());
     Serial.println(" readMQTT");
 
     //client.subscribe(TOPICO_SUBSCRIBE);
@@ -201,94 +203,6 @@ void mqttLoop()
   {
     reconnectMQTT();
   }
-}
-
-void moveRoboArm() {
-  // Mova o braço para pegar o objeto
-  servo1.write(45);
-  delay(3000);
-
-  EnviaAngloServosMQTT();
-
-  // Feche a garra
-  servo2.write(135);
-  delay(3000);
-
-  EnviaAngloServosMQTT();
-
-  // Levante o objeto
-  servo4.attach(10);
-  servo4.write(135);
-  delay(3000);
-  servo4.detach();
-
-  EnviaAngloServosMQTT();
-
-  // Vire para a esquerda
-  servo3.write(45);
-  delay(3000);
-
-  EnviaAngloServosMQTT();
-
-  // Abaixe o objeto
-  servo4.attach(10);
-  servo4.write(50);
-  delay(3000);
-  servo4.detach();
-
-  EnviaAngloServosMQTT();
-
-  // Abra a garra para soltar o objeto
-  servo2.write(90);
-  delay(3000);
-
-  EnviaAngloServosMQTT();
-
-  // Feche a garra
-  servo2.write(135);
-  delay(3000);
-
-  EnviaAngloServosMQTT();
-
-  // Levante o objeto novamente
-  servo4.attach(10);
-  servo4.write(135);
-  delay(3000);
-  servo4.detach();
-
-  EnviaAngloServosMQTT();
-
-  // Vire para a direita (ajuste o ângulo conforme necessário)
-  servo3.write(135);
-  delay(3000);
-
-  EnviaAngloServosMQTT();
-
-  // Abaixe o objeto
-  servo4.attach(10);
-  servo4.write(50);
-  delay(3000);
-  servo4.detach();
-
-  EnviaAngloServosMQTT();
-
-  // Feche a garra para pegar o objeto novamente
-  servo2.write(135);
-  delay(3000);
-
-  EnviaAngloServosMQTT();
-
-  // Retorne à posição inicial
-  /*servo1.write(50);
-  delay(1000);
-  //servo2.write(90);
-  delay(1500);
-  servo3.write(90);
-  delay(1500);
-  servo4.attach(10);
-  servo4.write(90);
-  delay(2000);
-  servo4.detach();*/
 }
 
 void loop()
