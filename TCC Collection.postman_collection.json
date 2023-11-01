@@ -175,6 +175,166 @@
 			"response": []
 		},
 		{
+			"name": "2. Subscribe Motor1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor1\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor1\"],\r\n    \"attrsFormat\": \"keyValues\"\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "http://{{url}}:1026/v2/subscriptions",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"subscriptions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Subscribe Motor2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor2\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor2\"],\r\n    \"attrsFormat\": \"keyValues\"\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "http://{{url}}:1026/v2/subscriptions",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"subscriptions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Subscribe Motor3",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor3\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor3\"],\r\n    \"attrsFormat\": \"keyValues\"\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "http://{{url}}:1026/v2/subscriptions",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"subscriptions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Subscribe Motor4",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor4\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor4\"],\r\n    \"attrsFormat\": \"keyValues\"\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "http://{{url}}:1026/v2/subscriptions",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"subscriptions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Enviar comando Switch pelo Orion Context Broker Copy",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
@@ -202,7 +362,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"motor1\": {\r\n        \"type\": \"Integer\",\r\n        \"value\": 30\r\n    }\r\n}"
+					"raw": "{\r\n    \"motor3\": {\r\n        \"type\": \"Integer\",\r\n        \"value\": 90\r\n    },\r\n    \"motor4\": {\r\n        \"type\": \"Integer\",\r\n        \"value\": 90\r\n    }\r\n}"
 				},
 				"url": {
 					"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:RoboArm:001/attrs",
@@ -216,46 +376,6 @@
 						"entities",
 						"urn:ngsi-ld:RoboArm:001",
 						"attrs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "2. sth subscribe temperature Copy",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "fiware-service",
-						"value": "smart",
-						"type": "text"
-					},
-					{
-						"key": "fiware-servicepath",
-						"value": "/",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all Motion Sensor count changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor1\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor1\"],\r\n    \"attrsFormat\": \"legacy\"\r\n  }\r\n}"
-				},
-				"url": {
-					"raw": "http://{{url}}:1026/v2/subscriptions",
-					"protocol": "http",
-					"host": [
-						"{{url}}"
-					],
-					"port": "1026",
-					"path": [
-						"v2",
-						"subscriptions"
 					]
 				}
 			},
