@@ -1,1 +1,2 @@
 # TCC-DT-Robot
+Repositório para centralização dos scripts utilizados no desenvolvimento da POC de criação do Digital Twin de um braço robótico como Trabalho de Conclusão de Curso (TCC) do curso de Engenharia de Computação da Faculdade Engenheiro Salvador Arena.
