@@ -95,26 +95,32 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length) {
   DynamicJsonDocument jsonDoc(512); // Ajuste o tamanho do documento conforme necessário
   deserializeJson(jsonDoc, message);
 
-  // Verificar todas as chaves possíveis ('motor1', 'motor2', 'motor3', 'motor4')
-  for (int i = 1; i <= 4; ++i) {
-    String motorKey = "motor" + String(i);
-    if (jsonDoc["data"][0].containsKey(motorKey)) {
-      // Se a chave do motor existe no JSON, extrair o valor
-      int valor = jsonDoc["data"][0][motorKey];
-      
-      // Agora você pode usar a variável 'motorKey' e 'valor' conforme necessário
-      // Por exemplo, você pode imprimir esses valores no console serial:
-      Serial.print("Motor: ");
-      Serial.println(motorKey);
-      Serial.print("Valor: ");
-      Serial.println(valor);
+  String lastDevice = jsonDoc["data"][0]["lastDevice"];
+  Serial.print("lastDevice: ");
+  Serial.println(lastDevice);
 
-      moveRoboArm(motorKey, valor);
+  //if (lastDevice != "RealRoboArm") {
+    // Verificar todas as chaves possíveis ('motor1', 'motor2', 'motor3', 'motor4')
+    for (int i = 1; i <= 4; ++i) {
+      String motorKey = "motor" + String(i);
+      if (jsonDoc["data"][0].containsKey(motorKey)) {
+        // Se a chave do motor existe no JSON, extrair o valor
+        int valor = jsonDoc["data"][0][motorKey];
 
-      // Após encontrar a chave correspondente, você pode sair do loop
-      break;
+        // Agora você pode usar a variável 'motorKey' e 'valor' conforme necessário
+        // Por exemplo, você pode imprimir esses valores no console serial:
+        Serial.print("Motor: ");
+        Serial.println(motorKey);
+        Serial.print("Valor: ");
+        Serial.println(valor);
+
+        moveRoboArm(motorKey, valor);
+
+        // Após encontrar a chave correspondente, você pode sair do loop
+        break;
+      }
     }
-  }
+  //}
 }
 
 // Função: reconecta-se ao broker MQTT (caso ainda não esteja conectado ou em caso de a conexão cair)
@@ -141,33 +147,9 @@ void reconnectMQTT()
   }
 }
 
-void moveRoboArm(String servo, int angle) {
-
-  if(servo.equals("motor1")){
-    servo1.write(angle);
-    delay(3000);
-  }
-  else if(servo.equals("motor2")){
-    servo2.write(angle);
-    delay(3000);
-  }
-  else if(servo.equals("motor3")){
-    servo3.write(angle);
-    delay(3000);
-  }
-  else if(servo.equals("motor4")){
-    servo4.attach(10);
-    servo4.write(angle);
-    delay(3000);
-    servo4.detach();
-  }
-  else{
-    Serial.println("Servo incorreto!");
-  }
-}
-
 void EnviaAngloServosMQTT()
-{  
+{
+  client.publish(TOPICO_PUBLISH, "ld|RealRoboArm");
   client.publish(TOPICO_PUBLISH, ("mt1|" + String(servo1.read())).c_str());
   client.publish(TOPICO_PUBLISH, ("mt2|" + String(servo2.read())).c_str());
   client.publish(TOPICO_PUBLISH, ("mt3|" + String(servo3.read())).c_str());
@@ -188,7 +170,7 @@ void readMQTT()
   if (client.connect(ID_MQTT))
   {
     //Serial.print(client.state());
-    Serial.println(" readMQTT");
+    //Serial.println(" readMQTT");
 
     //client.subscribe(TOPICO_SUBSCRIBE);
     client.loop();
@@ -205,6 +187,72 @@ void mqttLoop()
   }
 }
 
+void moveRoboArm(String servo, int angle) {
+
+  if (servo.equals("motor1")) {
+    servo1.write(angle);
+    delay(2000);
+  }
+  else if (servo.equals("motor2")) {
+    servo2.write(angle);
+    delay(2000);
+  }
+  else if (servo.equals("motor3")) {
+    servo3.write(angle);
+    delay(2000);
+  }
+  else if (servo.equals("motor4")) {
+    servo4.attach(10);
+    servo4.write(angle);
+    delay(2000);
+    servo4.detach();
+  }
+  else {
+    Serial.println("Servo incorreto!");
+  }
+}
+
+void inputData() {
+  if (Serial.available() > 0) {
+    //Ler comando da porta serial
+    String command = Serial.readStringUntil('\n');
+
+    //Separar comando em servo_id e ângulo
+    int servoId = command.substring(0, 1).toInt();
+    int angle = command.substring(2).toInt();
+
+    //Verifica se o servo_id está na faixa válida(1 a 4) e o ângulo está na faixa de 0 a 180
+    if (servoId >= 1 && servoId <= 4 && angle >= 0 && angle <= 180) {
+      //Move o servo correspondente para a posição desejada
+      if (servoId == 1) {
+        servo1.write(angle);
+        delay(1000);
+        EnviaAngloServosMQTT();
+      }
+      else if (servoId == 2) {
+        servo2.write(angle);
+        delay(1000);
+        EnviaAngloServosMQTT();
+      }
+      else if (servoId == 3) {
+        servo3.write(angle);
+        delay(1000);
+        EnviaAngloServosMQTT();
+      }
+      else if (servoId == 4) {
+        servo4.attach(10);
+        servo4.write(angle);
+        delay(1000);
+        servo4.detach();
+        EnviaAngloServosMQTT();
+      }
+      else {
+        Serial.println("Comando inválido. Use o formato: servo_id:ângulo (por exemplo, 1:90)");
+      }
+    }
+  }
+}
+
 void loop()
 {
 
@@ -212,5 +260,5 @@ void loop()
   mqttThread.run();
   mqttThreadRead.run();
 
-  //EnviaAngloServosMQTT();
+  inputData();
 }
