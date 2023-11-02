@@ -45,7 +45,7 @@
 			"response": []
 		},
 		{
-			"name": "Provisionar um dispositivo Copy",
+			"name": "Provisionar um dispositivo",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -67,7 +67,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"devices\": [\r\n        {\r\n            \"device_id\": \"DeviceRoboArm001\",\r\n            \"entity_name\": \"urn:ngsi-ld:RoboArm:001\",\r\n            \"entity_type\": \"RoboArm\",\r\n            \"protocol\": \"PDI-IoTA-UltraLight\",\r\n            \"transport\": \"MQTT\",\r\n            \"timezone\":    \"America/Sao_Paulo\",\r\n            \"attributes\": [\r\n                {\r\n                    \"object_id\": \"mt1\",\r\n                    \"name\": \"motor1\",\r\n                    \"type\": \"Integer\"\r\n                },\r\n                {\r\n                    \"object_id\": \"mt2\",\r\n                    \"name\": \"motor2\",\r\n                    \"type\": \"Integer\"\r\n                },\r\n                {\r\n                    \"object_id\": \"mt3\",\r\n                    \"name\": \"motor3\",\r\n                    \"type\": \"Integer\"\r\n                },\r\n                {\r\n                    \"object_id\": \"mt4\",\r\n                    \"name\": \"motor4\",\r\n                    \"type\": \"Integer\"\r\n                }\r\n            ],\r\n            \"commands\": [\r\n                {\r\n                    \"name\": \"moveMotor1\",\r\n                    \"type\": \"command\"\r\n                },\r\n                {\r\n                    \"name\": \"moveMotor2\",\r\n                    \"type\": \"command\"\r\n                },\r\n                {\r\n                    \"name\": \"moveMotor3\",\r\n                    \"type\": \"command\"\r\n                },\r\n                {\r\n                    \"name\": \"moveMotor4\",\r\n                    \"type\": \"command\"\r\n                }\r\n            ],\r\n            \"static_attributes\": [\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"devices\": [\r\n        {\r\n            \"device_id\": \"DeviceRoboArm001\",\r\n            \"entity_name\": \"urn:ngsi-ld:RoboArm:001\",\r\n            \"entity_type\": \"RoboArm\",\r\n            \"protocol\": \"PDI-IoTA-UltraLight\",\r\n            \"transport\": \"MQTT\",\r\n            \"timezone\":    \"America/Sao_Paulo\",\r\n            \"attributes\": [\r\n                {\r\n                    \"object_id\": \"mt1\",\r\n                    \"name\": \"motor1\",\r\n                    \"type\": \"Integer\"\r\n                },\r\n                {\r\n                    \"object_id\": \"mt2\",\r\n                    \"name\": \"motor2\",\r\n                    \"type\": \"Integer\"\r\n                },\r\n                {\r\n                    \"object_id\": \"mt3\",\r\n                    \"name\": \"motor3\",\r\n                    \"type\": \"Integer\"\r\n                },\r\n                {\r\n                    \"object_id\": \"mt4\",\r\n                    \"name\": \"motor4\",\r\n                    \"type\": \"Integer\"\r\n                },\r\n                {\r\n                    \"object_id\": \"ld\",\r\n                    \"name\": \"lastDevice\",\r\n                    \"type\": \"Text\"\r\n                }\r\n            ],\r\n            \"commands\": [\r\n                {\r\n                    \"name\": \"moveMotor1\",\r\n                    \"type\": \"command\"\r\n                },\r\n                {\r\n                    \"name\": \"moveMotor2\",\r\n                    \"type\": \"command\"\r\n                },\r\n                {\r\n                    \"name\": \"moveMotor3\",\r\n                    \"type\": \"command\"\r\n                },\r\n                {\r\n                    \"name\": \"moveMotor4\",\r\n                    \"type\": \"command\"\r\n                }\r\n            ],\r\n            \"static_attributes\": [\r\n            ]\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -90,7 +90,7 @@
 			"response": []
 		},
 		{
-			"name": "Obter device Copy",
+			"name": "Get device",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -139,7 +139,7 @@
 			"response": []
 		},
 		{
-			"name": "3.Get  Copy",
+			"name": "Get  entity",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -175,7 +175,44 @@
 			"response": []
 		},
 		{
-			"name": "2. Subscribe Motor1",
+			"name": "Get entity attrs",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "fiware-service",
+						"type": "text",
+						"value": "smart"
+					},
+					{
+						"key": "fiware-servicepath",
+						"type": "text",
+						"value": "/"
+					}
+				],
+				"url": {
+					"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:RoboArm:001/attrs",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"entities",
+						"urn:ngsi-ld:RoboArm:001",
+						"attrs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Subscribe Motor1",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -197,10 +234,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor1\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor1\"],\r\n    \"attrsFormat\": \"keyValues\"\r\n  }\r\n}"
+					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor1\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor1\", \"lastDevice\"],\r\n    \"attrsFormat\": \"keyValues\"\r\n  }\r\n}"
 				},
 				"url": {
-					"raw": "http://{{url}}:1026/v2/subscriptions",
+					"raw": "http://{{url}}:1026/v2/subscriptions/",
 					"protocol": "http",
 					"host": [
 						"{{url}}"
@@ -208,14 +245,15 @@
 					"port": "1026",
 					"path": [
 						"v2",
-						"subscriptions"
+						"subscriptions",
+						""
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "2. Subscribe Motor2",
+			"name": "Subscribe Motor2",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -237,7 +275,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor2\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor2\"],\r\n    \"attrsFormat\": \"keyValues\"\r\n  }\r\n}"
+					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor2\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor2\", \"lastDevice\"],\r\n    \"attrsFormat\": \"keyValues\"\r\n  }\r\n}"
 				},
 				"url": {
 					"raw": "http://{{url}}:1026/v2/subscriptions",
@@ -255,7 +293,7 @@
 			"response": []
 		},
 		{
-			"name": "2. Subscribe Motor3",
+			"name": "Subscribe Motor3",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -277,7 +315,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor3\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor3\"],\r\n    \"attrsFormat\": \"keyValues\"\r\n  }\r\n}"
+					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor3\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor3\", \"lastDevice\"],\r\n    \"attrsFormat\": \"keyValues\"\r\n  }\r\n}"
 				},
 				"url": {
 					"raw": "http://{{url}}:1026/v2/subscriptions",
@@ -295,7 +333,7 @@
 			"response": []
 		},
 		{
-			"name": "2. Subscribe Motor4",
+			"name": "Subscribe Motor4",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -317,7 +355,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor4\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor4\"],\r\n    \"attrsFormat\": \"keyValues\"\r\n  }\r\n}"
+					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor4\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor4\", \"lastDevice\"],\r\n    \"attrsFormat\": \"keyValues\"\r\n  }\r\n}"
 				},
 				"url": {
 					"raw": "http://{{url}}:1026/v2/subscriptions",
@@ -335,7 +373,7 @@
 			"response": []
 		},
 		{
-			"name": "Enviar comando Switch pelo Orion Context Broker Copy",
+			"name": "Enviar comando Switch pelo Orion Context Broker",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"content-type": true
