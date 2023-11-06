@@ -2,12 +2,13 @@
 	"info": {
 		"_postman_id": "8c1a2ffa-54e3-43ac-a62d-d70e6c5fbfe4",
 		"name": "TCC Collection",
+		"description": "## Descrição\n\nEsta coleção de requisições Postman foi criada para facilitar a integração com o Orion Context Broker, uma plataforma de gerenciamento de dados contextuais, usando a API RESTful disponibilizada pelo Orion.\n\nAs requisições nesta coleção abrangem várias etapas do processo, desde a criação de serviços e provisionamento de dispositivos até a subscrição de atributos específicos e envio de comandos utilizando o Orion Context Broker e MQTT.\n\n## Requisições Disponíveis\n\n1. **Criar um Serviço Copy:**\n    - Cria um serviço no Orion Context Broker para comunicação com dispositivos.\n2. **Provisionar um Dispositivo:**\n    - Registra um novo dispositivo no Orion Context Broker com atributos e comandos específicos.\n3. **Obter Dados do Dispositivo:**\n    - Obtém informações sobre um dispositivo específico registrado no Orion Context Broker.\n4. **Obter Entidade:**\n    - Recupera informações sobre uma entidade específica no Orion Context Broker.\n5. **Obter Atributos da Entidade:**\n    - Obtém os atributos de uma entidade específica no Orion Context Broker.\n6. **Subscrever-se às Mudanças do Motor1:**\n    - Cria uma subscrição para receber notificações sobre mudanças no atributo `motor1` do dispositivo.\n7. **Subscrever-se às Mudanças do Motor2:**\n    - Cria uma subscrição para receber notificações sobre mudanças no atributo `motor2` do dispositivo.\n8. **Subscrever-se às Mudanças do Motor3:**\n    - Cria uma subscrição para receber notificações sobre mudanças no atributo `motor3` do dispositivo.\n9. **Subscrever-se às Mudanças do Motor4:**\n    - Cria uma subscrição para receber notificações sobre mudanças no atributo `motor4` do dispositivo.\n10. **Enviar Comando Switch pelo Orion Context Broker:**\n    - Envia um comando para definir os valores dos atributos",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "19683788"
 	},
 	"item": [
 		{
-			"name": "Criar um serviço Copy",
+			"name": "Criar um serviço",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -234,7 +235,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n        \"type\": \"RoboArm\"\r\n      }\r\n    ],\r\n    \"condition\": {\r\n      \"attrs\": [\"motor1\"]\r\n    }\r\n  },\r\n  \"notification\": {\r\n    \"mqtt\": {\r\n      \"url\": \"mqtt://52.149.214.24:1883\",\r\n      \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n      \"qos\": 1,\r\n      \"retain\": false\r\n    },\r\n    \"attrs\": [\"motor1\", \"lastDevice\"],\r\n    \"attrsFormat\": \"keyValues\"\r\n  }\r\n}"
+					"raw": "{\r\n    \"description\": \"Notify STH-Comet of all servomotors angle changes\",\r\n    \"subject\": {\r\n        \"entities\": [\r\n            {\r\n                \"id\": \"urn:ngsi-ld:RoboArm:001\",\r\n                \"type\": \"RoboArm\"\r\n            }\r\n        ],\r\n        \"condition\": {\r\n            \"attrs\": [\r\n                \"motor1\"\r\n            ]\r\n        }\r\n    },\r\n    \"notification\": {\r\n        \"mqtt\": {\r\n            \"url\": \"mqtt://52.149.214.24:1883\",\r\n            \"topic\": \"/TEF/DeviceRoboArm001/cmd\",\r\n            \"qos\": 1,\r\n            \"retain\": false\r\n        },\r\n        \"attrs\": [\r\n            \"motor1\",\r\n            \"lastDevice\"\r\n        ],\r\n        \"attrsFormat\": \"keyValues\"\r\n    }\r\n}"
 				},
 				"url": {
 					"raw": "http://{{url}}:1026/v2/subscriptions/",
