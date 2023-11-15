@@ -2,7 +2,8 @@
 #include <EthernetUdp.h>   // Inclui a biblioteca Udp
 #include <SPI.h>           // Inclui a biblioteca SPI
 #include <PubSubClient.h>  // Inclui a biblioteca PubSubClient para MQTT
-#include <Servo.h>
+//#include <Servo.h>
+#include <VarSpeedServo.h> // inclusão da biblioteca
 #include <ThreadController.h>
 #include <ArduinoJson.h>
 #include "Wire.h"          // Inclui a biblioteca Wire para comunicação I2C
@@ -27,10 +28,10 @@ ThreadController mqttThread = ThreadController();      // Controlador de threads
 ThreadController mqttThreadRead = ThreadController();  // Controlador de threads para leitura MQTT
 
 // Declaração dos objetos do Servo Motor
-Servo servo1;  
-Servo servo2;
-Servo servo3;
-Servo servo4;
+VarSpeedServo servo1;  
+VarSpeedServo servo2;
+VarSpeedServo servo3;
+VarSpeedServo servo4;
 
 // Função de inicialização
 void setup()
@@ -67,6 +68,12 @@ void setup()
   mqttThreadRead.onRun(readMQTT);
   mqttThread.setInterval(1000);
   mqttThread.enabled = true;
+
+  // Menu Inicial
+  Serial.println("Bem-vindo ao Menu do Controle de Servos!");
+  Serial.println("Opções:");
+  Serial.println("1. Mover servo individual (formato: 1:90)");
+  Serial.println("2. Executar movimento pré definido (digite 'A')");
 }
 
 // Função de callback para mensagens MQTT recebidas
@@ -124,13 +131,27 @@ void reconnectMQTT()
 }
 
 // Função para enviar dados dos servos via MQTT
-void EnviaAngloServosMQTT()
-{
-  client.publish(TOPICO_PUBLISH, "ld|RealRoboArm");
-  client.publish(TOPICO_PUBLISH, ("mt1|" + String(servo1.read())).c_str());
-  client.publish(TOPICO_PUBLISH, ("mt2|" + String(servo2.read())).c_str());
-  client.publish(TOPICO_PUBLISH, ("mt3|" + String(servo3.read())).c_str());
-  client.publish(TOPICO_PUBLISH, ("mt4|" + String(servo4.read())).c_str());
+void EnviaAngloServosMQTT(int servoId)
+{  
+  switch (servoId) 
+  {
+      case 1:
+        client.publish(TOPICO_PUBLISH, "ld|RealRoboArm");
+        client.publish(TOPICO_PUBLISH, ("mt1|" + String(servo1.read())).c_str());
+        break;
+      case 2:
+        client.publish(TOPICO_PUBLISH, "ld|RealRoboArm");
+        client.publish(TOPICO_PUBLISH, ("mt2|" + String(servo2.read())).c_str());
+        break;
+      case 3:
+        client.publish(TOPICO_PUBLISH, "ld|RealRoboArm");
+        client.publish(TOPICO_PUBLISH, ("mt3|" + String(servo3.read())).c_str());
+        break;
+      case 4:
+        client.publish(TOPICO_PUBLISH, "ld|RealRoboArm");
+        client.publish(TOPICO_PUBLISH, ("mt4|" + String(servo4.read())).c_str());
+        break;
+  }  
 
   Serial.println("*--------//--------*");
   Serial.println("Motor1: " + String(servo1.read()));
@@ -166,24 +187,24 @@ void moveRoboArm(String servo, int angle)
 {
   if (servo.equals("motor1"))
   {
-    servo1.write(angle);
+    servo1.slowmove(angle, 30);
     delay(2000);
   }
   else if (servo.equals("motor2"))
   {
-    servo2.write(angle);
+    servo2.slowmove(angle, 30);
     delay(2000);
   }
   else if (servo.equals("motor3"))
   {
-    servo3.write(angle);
+    servo3.slowmove(angle, 30);
     delay(2000);
   }
   else if (servo.equals("motor4"))
   {
     servo4.attach(10);
     delay(500);
-    servo4.write(angle);
+    servo4.slowmove(angle, 30);
     delay(1500);
     servo4.detach();
   }
@@ -193,55 +214,95 @@ void moveRoboArm(String servo, int angle)
   }
 }
 
-// Função para ler dados da porta serial e mover os servos correspondentes
-void inputData()
+void executarMovimentoPredefinido()
 {
-  if (Serial.available() > 0)
-  {
-    String command = Serial.readStringUntil('\n');
-    int servoId = command.substring(0, 1).toInt();
-    int angle = command.substring(2).toInt();
+  // Mova o braço para pegar o objeto
+  moveRoboArm("motor1", 45);
 
-    if (servoId >= 1 && servoId <= 4 && angle >= 0 && angle <= 180)
-    {
-      if (servoId == 1)
-      {
-        servo1.write(angle);
-        delay(1000);
-        EnviaAngloServosMQTT();
-      }
-      else if (servoId == 2)
-      {
-        servo2.write(angle);
-        delay(1000);
-        EnviaAngloServosMQTT();
-      }
-      else if (servoId == 3)
-      {
-        servo3.write(angle);
-        delay(1000);
-        EnviaAngloServosMQTT();
-      }
-      else if (servoId == 4)
-      {
-        servo4.attach(10);
-        servo4.write(angle);
-        delay(1000);
-        servo4.detach();
-        EnviaAngloServosMQTT();
-      }
-      else
-      {
-        Serial.println("Comando inválido. Use o formato: servo_id:ângulo (por exemplo, 1:90)");
-      }
-    }
+  EnviaAngloServosMQTT(1);
+
+  // Feche a garra
+  moveRoboArm("motor2", 135);
+
+  EnviaAngloServosMQTT(2);
+
+  // Levante o objeto
+  moveRoboArm("motor4", 135);
+
+  EnviaAngloServosMQTT(4);
+
+  // Vire para a esquerda
+  moveRoboArm("motor3", 45);
+
+  EnviaAngloServosMQTT(3);
+
+  // Abaixe o objeto
+  moveRoboArm("motor4", 50);
+
+  EnviaAngloServosMQTT(4);
+
+  // Abra a garra para soltar o objeto
+  moveRoboArm("motor2", 90);
+
+  EnviaAngloServosMQTT(2);
+
+  // Feche a garra
+  moveRoboArm("motor2", 135);
+
+  EnviaAngloServosMQTT(2);
+
+  // Levante o objeto novamente
+  moveRoboArm("motor4", 135);
+
+  EnviaAngloServosMQTT(4);
+
+  // Vire para a direita (ajuste o ângulo conforme necessário)
+  moveRoboArm("motor3", 135);
+
+  EnviaAngloServosMQTT(3);
+
+  // Abaixe o objeto
+  moveRoboArm("motor4", 50);
+
+  EnviaAngloServosMQTT(4);
+
+  // Feche a garra para pegar o objeto novamente
+  moveRoboArm("motor2", 135);
+
+  EnviaAngloServosMQTT(2);
+}
+
+void processarComando(String comando) 
+{
+  if (comando.startsWith("1:") || comando.startsWith("2:") || comando.startsWith("3:") || comando.startsWith("4:")) 
+  {
+    String servoId = comando.substring(0, 1);
+    int angulo = comando.substring(2).toInt();
+    
+    moveRoboArm("motor"+servoId, angulo);
+    EnviaAngloServosMQTT(servoId.toInt());
+  } 
+  else if (comando.equalsIgnoreCase("A"))
+  {
+    executarMovimentoPredefinido();
+  } 
+  else 
+  {
+    Serial.println("Comando inválido. Use o formato: servo_id:ângulo (por exemplo, 1:90) ou A para movimento pré definido");
   }
 }
+
 
 // Função principal de execução
 void loop()
 {
-  mqttThread.run();  // Executa a thread MQTT
+  // Executa as threads MQTT
+  mqttThread.run();  
   mqttThreadRead.run();
-  inputData();       // Lê dados da porta serial e controla os servos correspondentes
+
+  // Lê dados da porta serial e controla os servos correspondentes
+  if (Serial.available() > 0) {
+    String input = Serial.readStringUntil('\n');
+    processarComando(input);
+  }       
 }
